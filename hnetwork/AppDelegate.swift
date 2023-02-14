@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  hnetwork
-//
-//  Created by Helio Feliciano on 11/02/23.
-//
-
 import UIKit
 
 @main

@@ -2,32 +2,19 @@ import Foundation
 
 class ViewModel: ObservableObject {
     
-    var temp: Double
+    var weatherData: WeatherResponse?
+    
+    let cityURL = "https://api.openweathermap.org/data/2.5/weather?q=natal&appid=6c30f17166171a6f838e635f572cd32d&units=metric"
     
     init() {
-        temp = 0
-        getData()
-    }
-    
-    func getData() {
-        let weatherURL = "https://api.openweathermap.org/data/2.5/weather?q=delhi&appid={YOUR-API-KEY}&units=metric"
-        
-        guard let url = URL(string: weatherURL) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard data != nil else {
-                print("[ERROR] data is nil")
-                return
+        WeatherService.getData(urlCity: cityURL) { result in
+            switch result {
+            case .success(let data):
+                self.weatherData = data
+                print("[SUCCESS] \(data)")
+            case .failure(let error):
+                print("[ERROR] \(error)")
             }
-            
-            let decoder = JSONDecoder()
-            let decodedData = try? decoder.decode(WeatherResponse.self, from: data!)
-            
-            DispatchQueue.main.async {
-                self.temp = (decodedData?.main.temp)!
-            }
-        }.resume()
+        }
     }
 }
